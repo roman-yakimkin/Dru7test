@@ -1,2 +1,84 @@
 <?php
 
+/**
+ * Implements hook_services_resources().
+ */
+function yrv_services_services_resources() {
+  $resources = [
+    'yrvmath' => [
+      'actions' => [
+        'quadratic' => [
+          'help' => t('A quadratic equation REST '),
+          'access callback' => '_yrv_services_quadratic_equation_access',
+          'access arguments append' => TRUE,
+          'callback' => '_yrv_services_quadratic_equation_callback',
+          'args' => [
+            [
+              'name' => 'a',
+              'type' => 'int',
+              'description' => 'The a argument',
+              'source' => [
+                'data' => 'a'
+              ],
+              'optional' => TRUE,
+              'default value' => 1,
+            ],
+            [
+              'name' => 'b',
+              'type' => 'int',
+              'description' => 'The b argument',
+              'source' => [
+                'data' => 'b'
+              ],
+              'optional' => TRUE,
+              'default value' => 1,
+            ],
+            [
+              'name' => 'c',
+              'type' => 'int',
+              'description' => 'The c argument',
+              'source' => [
+                'data' => 'c'
+              ],
+              'optional' => TRUE,
+              'default value' => 1,
+            ],
+          ]
+        ]
+      ]
+    ]
+  ];
+
+  return $resources;
+}
+
+function _yrv_services_quadratic_equation_access($op = 'check', $args = []){
+  return TRUE;
+}
+
+function _yrv_services_quadratic_equation_callback($a, $b, $c){
+
+  $discr = $b*$b-4*$a*$c;
+  $data = [];
+
+  if ($discr < 0){
+    $result = 'This quadratic equition doesn\'t have real roots';
+  }
+  elseif ($a == 0){
+    $result = 'This is a simple linear equition and it has a single root';
+    $x = -$c/$b;
+    $data['x'] = $x;
+  }
+  else{
+    $result = 'This is a quadratic equition';
+    $x1 = (-$b + sqrt($discr))/(2*$a);
+    $x2 = (-$b - sqrt($discr))/(2*$a);
+    $data['x1'] = $x1;
+    $data['x2'] = $x2;
+  }
+
+  $data['result'] = $result;
+
+  return drupal_json_output($data);
+}
+

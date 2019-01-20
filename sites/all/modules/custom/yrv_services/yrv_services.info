@@ -1,4 +1,5 @@
 name = YRV Math Rest API
 description = YRV mathematical Rest API based on restful module
+package = YRV
 core = 7.x
-dependencies[] = rest_server
+dependencies[] = services
